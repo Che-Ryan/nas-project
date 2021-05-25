@@ -1,0 +1,7 @@
+pandas
+pickle-mixin
+nltk
+sklearn
+requests
+flask
+python-docx

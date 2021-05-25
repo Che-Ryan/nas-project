@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+        <title>Result</title>
+    </head>
+    <body>
+        <div class="container-result">
+            <h1>Summary</h1>
+            <p>{{summary}}</p>
+            <h2>Category of the news:</h2>
+            <p>{{category}}</p>
+        </div>
+    </body>
+</html>

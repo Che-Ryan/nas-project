@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+        <title>Automatic News Article Summarizer</title>
+    </head>
+    <body>
+        <div class="container">
+            <form action="{{url_for('predict')}}" method="POST" enctype="multipart/form-data">
+                <h1 class="title">News Article Summarizer</h1>
+                <div class="buttons">
+                    <button class="active" id="b1" type="button" onclick="func1">Text</button>
+                    <button id="b2" type="button" onclick="func2">File</button>
+                </div>
+                <div class="input-area">
+                    <textarea name="inputdata" id="inputdata" placeholder="Paste an article here."></textarea>
+                    <div class="upload-box" id="filedata">
+                        <p>Upload a file here.</p>
+                        <p>(File type should be .txt or .docx)</p>
+                        <div class="upload">
+                            <input type="file" name="file" value="File Upload">
+                            <h1>&#8593</h1>
+                        </div>
+                    </div>
+                </div>
+                <input type="submit" class="btn" value="Summarize">
+            </form>
+        </div>
+    </body>
+    <script>
+        var textButton = document.getElementById("b1");
+        var fileButton = document.getElementById("b2");
+        var textArea = document.getElementById("inputdata");
+        var fileArea = document.getElementById("filedata");
+        function func1(){
+            fileButton.classList.remove('active');
+            textButton.classList.add('active');
+            textArea.style.transform = "translateX(0px)";
+            fileArea.style.transform = "translateX(0px)";
+        }
+        function func2(){
+            textButton.classList.remove('active');
+            fileButton.classList.add('active');
+            textArea.style.transform = "translateX(-450px)";
+            fileArea.style.transform = "translateX(-450px)";
+        }
+        textButton.addEventListener("click", func1);
+        fileButton.addEventListener("click",func2);
+    </script>
+</html>
