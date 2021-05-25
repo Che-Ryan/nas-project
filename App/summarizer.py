@@ -15,14 +15,15 @@ from sklearn.metrics.pairwise import cosine_similarity
 nltk.download('wordnet') 
 nltk.download('stopwords')
 
-# vectorizer model saved (Creation of this model is described at Notebooks/feature_engineering.ipynb).
+# vectorizer model saved (Training of this model is described at Notebooks/feature engineering.ipynb).
 with open('pickles\\tfidf.pickle','rb') as data:
     tfidf = pickle.load(data)
 
-
+# trained model for category predicton (training of the model is described at Notebooks/SVM model).
 with open('pickles\\svm.pickle','rb') as data:
     svm = pickle.load(data)
 
+#function for triplet extraction
 def triplet_extraction (parse_tree):
     
     subject = extract_subject(parse_tree)
@@ -31,7 +32,7 @@ def triplet_extraction (parse_tree):
    
     return [subject, predicate, objects]
 
-
+#functions for extracting extracting subject, predicate and object (For more details refer our base paper).
 def extract_subject (parse_tree):
     
     subject = []
@@ -76,24 +77,26 @@ def extract_object (parse_tree):
     else: return ''
 
 
-
+#this function takes an input text and tokenizes it into sentences, and then each sentences is converted into triplets.
 def text_preprocess(text):
-    tokenizer  = nltk.tokenize.punkt.PunktSentenceTokenizer()
-    parser = CoreNLPParser(tagtype='pos')
-    sentences = tokenizer.tokenize(text);
+    tokenizer  = nltk.tokenize.punkt.PunktSentenceTokenizer()                   
+    parser = CoreNLPParser(tagtype='pos')                                       
+    sentences = tokenizer.tokenize(text);      #breaks down the paragraph into sentences
     result = []
     for sentence in sentences:
-        parse_tree, = ParentedTree.convert(list(parser.parse(sentence.split()))[0])
-        result.append(triplet_extraction(parse_tree)) 
+        parse_tree, = ParentedTree.convert(list(parser.parse(sentence.split()))[0])     #Uses Stanford CoreNLP parser to parse the sentence into parts of speech.
+        result.append(triplet_extraction(parse_tree))       #Extracts the triplets of each sentences.
     
     return result,sentences
 
+#function to lemmatize the predicate of each triplet.
 def stemming(triplets):
-    lemmatizer = WordNetLemmatizer()
+    lemmatizer = WordNetLemmatizer()                                              
     for triplet in triplets:
-        triplet[1] = lemmatizer.lemmatize(triplet[1],pos='v')
+        triplet[1] = lemmatizer.lemmatize(triplet[1],pos='v')      
     return triplets
 
+#function for removing stopwords, punctuations and lemmatizing verbs.
 def process_sentences(sentences):
     lemmatizer = WordNetLemmatizer()
     to_remove = stopwords.words('english') + list(punctuation) + ["``","'s","'d","''","'"]
@@ -106,10 +109,10 @@ def process_sentences(sentences):
         processed_sentences.append(' '.join(tokens))
     return processed_sentences
 
+#function that calls all the above functions to parse the input text and outputs three arrays :- triplets, sentences and processed sentences 
 def parsing(txt):
     
     # For this section give path values of java, and corenlp in your system.
-    
     java_path = "C:/Program Files/Java/jdk-15.0.1/bin/java.exe"
     os.environ['JAVAHOME'] = java_path
     cn_path = "D:/Learning Material/Project/Actual work/corenlp/stanford-corenlp-4.2.0/stanford-corenlp-4.2.0.jar" 
@@ -127,6 +130,7 @@ def parsing(txt):
     
     return triplets,sentences,processed
 
+#function to generate the summary of the text
 def summarize(triplets,sentences,processed_sentences,r):
     
     vect = TfidfVectorizer(encoding = 'utf-8',
@@ -137,11 +141,11 @@ def summarize(triplets,sentences,processed_sentences,r):
                         norm = 'l2',
                         sublinear_tf = True)
     inp = pd.Series(triplets)
-    features = vect.fit_transform(inp).todense()
+    features = vect.fit_transform(inp).todense()        #the triplets are vectorized into features for the model.
     
     
     n = int(len(features)*r)
-    model = KMeans(n_clusters=n, init='k-means++', max_iter=50, n_init=10)
+    model = KMeans(n_clusters=n, init='k-means++', max_iter=50, n_init=10)      #the features are clustered using kmeans clustering
     model.fit(features)
     clusters = model.labels_.tolist()
 
