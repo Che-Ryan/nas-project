@@ -15,9 +15,11 @@ from sklearn.metrics.pairwise import cosine_similarity
 nltk.download('wordnet') 
 nltk.download('stopwords')
 
+# vectorizer model saved (Creation of this model is described at Notebooks/feature_engineering.ipynb).
 with open('pickles\\tfidf.pickle','rb') as data:
     tfidf = pickle.load(data)
-    
+
+
 with open('pickles\\svm.pickle','rb') as data:
     svm = pickle.load(data)
 
@@ -106,9 +108,11 @@ def process_sentences(sentences):
 
 def parsing(txt):
     
+    # For this section give path values of java, and corenlp in your system.
+    
     java_path = "C:/Program Files/Java/jdk-15.0.1/bin/java.exe"
     os.environ['JAVAHOME'] = java_path
-    cn_path = "D:/Learning Material/Project/Actual work/corenlp/stanford-corenlp-4.2.0/stanford-corenlp-4.2.0.jar"
+    cn_path = "D:/Learning Material/Project/Actual work/corenlp/stanford-corenlp-4.2.0/stanford-corenlp-4.2.0.jar" 
     model_path= "D:/Learning Material/Project/Actual work/corenlp/stanford-corenlp-4.2.0/stanford-corenlp-4.2.0-models.jar"
     
     server = CoreNLPServer(cn_path,model_path)
