@@ -15,7 +15,7 @@ def predict():
         if len(article)==0:
             f = request.files['file']
             article = fl.fileload(f)            
-        r = 0.4
+        r = 0.5
         triplets,sentences,processed = s.parsing(article)
         summary = s.summarize(triplets,sentences,processed,r)
         cat,_ = s.predict_cat(article)
